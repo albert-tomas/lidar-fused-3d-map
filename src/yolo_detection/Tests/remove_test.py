@@ -173,8 +173,8 @@ if __name__ == "__main__":
     predictions = yolo_add_boxes()
     #print(predictions['predictions'])
     # Remove points from CSV
-    #remove_points_in_boxes('C:/Users/Albert/Desktop/lidar-fused-3d-map/YOLO_file/test_points.csv', predictions, 'C:/Users/Albert/Desktop/lidar-fused-3d-map/YOLO_file/test_points_removed.csv')
+    remove_points_in_boxes('C:/Users/Albert/Desktop/lidar-fused-3d-map/YOLO_file/test_points.csv', predictions, 'C:/Users/Albert/Desktop/lidar-fused-3d-map/YOLO_file/test_points_removed.csv')
     #show_csv("C:/Users/Albert/Desktop/lidar-fused-3d-map/YOLO_file/test_points_removed.csv")
-    remove_points_in_boxes('C:/Users/Albert/Desktop/lidar-fused-3d-map/YOLO_file/frame_083.csv', predictions, 'C:/Users/Albert/Desktop/lidar-fused-3d-map/YOLO_file/frame_083_no_person.csv')
+    #remove_points_in_boxes('C:/Users/Albert/Desktop/lidar-fused-3d-map/YOLO_file/frame_083.csv', predictions, 'C:/Users/Albert/Desktop/lidar-fused-3d-map/YOLO_file/frame_083_no_person.csv')
     show_csv("C:/Users/Albert/Desktop/lidar-fused-3d-map/YOLO_file/frame_083_no_person.csv")
     

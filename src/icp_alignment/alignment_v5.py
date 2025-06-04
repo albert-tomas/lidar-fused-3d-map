@@ -4,7 +4,17 @@ import open3d as o3d
 import numpy as np
 import time
 import pygetwindow as gw
-from pcapfile import savefile
+
+
+# Configuration
+CONFIG = {
+    "max_number_of_clouds": 250,
+    "voxel_size": 0.5,
+    "print_realtime": True,
+    "folder_path_csv": "C:/Users/Albert/Desktop/lidar-fused-3d-map/CSVfiles",
+    "save_map": True,
+    "save_transformations": True
+}
 
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -59,7 +69,8 @@ def icp_alignment(csv_files, folder_path, vis, max_number_of_clouds, voxel_size=
     global_map = input_cloud.voxel_down_sample(voxel_size)
 
     # Display the initial point cloud
-    display_point_cloud(vis, global_map, point_size=2.0)
+    if CONFIG["print_realtime"]:
+        display_point_cloud(vis, global_map, point_size=2.0)
     
     criteria = o3d.pipelines.registration.ICPConvergenceCriteria(max_iterations)
     
@@ -97,8 +108,9 @@ def icp_alignment(csv_files, folder_path, vis, max_number_of_clouds, voxel_size=
         global_map.points.extend(current_cloud_downsampled.points)
         #global_map = global_map.voxel_down_sample(voxel_size)
         
-        print(f"Cloud {i} aligned.")
-        display_point_cloud(vis, global_map, point_size=2.0)
+        print(f"Cloud {i} aligned. Total number of points in global map: {len(global_map.points)}")
+        if CONFIG["print_realtime"]:
+            display_point_cloud(vis, global_map, point_size=2.0)
     
     return global_map, transformations
 
@@ -119,26 +131,34 @@ def main():
     start_time = time.time()
     
     # Variables
-    max_number_of_clouds = 250
-    voxel_size = 0.5
+    max_number_of_clouds = CONFIG["max_number_of_clouds"]
+    voxel_size = CONFIG["voxel_size"]
     
     # Folder path with all the CSV files
-    folder_path = "C:/Users/Albert/Desktop/lidar-fused-3d-map/CSVfiles"
+    #folder_path = "C:/Users/Albert/Desktop/lidar-fused-3d-map/CSVfiles"
+    folder_path = CONFIG["folder_path_csv"]
     # folder_path = "D:/lidar-thesis/PCAP_CSV_files/Capture1911/CSV"
     csv_files = get_csv_files(folder_path)
     
     # Initialize and run the visualizer
-    vis = setup_visualizer()
+    if CONFIG["print_realtime"]:
+        vis = setup_visualizer()
+    else:
+        vis = None
     
     global_map, transformations = icp_alignment(csv_files, folder_path, vis, max_number_of_clouds, voxel_size)
     
-    save_map(global_map)
-    save_transformations(transformations)
+    if CONFIG["save_map"]:
+        save_map(global_map)
+        
+    if CONFIG["save_transformations"]:
+        save_transformations(transformations)
     
     end_time = time.time()
     print(f"Execution time: {end_time - start_time:.2f} seconds")
     
-    vis.run()    
+    if CONFIG["print_realtime"]:
+        vis.run()    
     
 
 
